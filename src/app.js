@@ -22,12 +22,12 @@
     return res.render('login');
   });
 
+  app.get('/insert-metrics', function(req, res) {
+    return res.render('insert_metrics');
+  });
+
   app.get('/', function(req, res) {
-    return res.render('index', {
-      locals: {
-        title: 'My ECE test page'
-      }
-    });
+    return res.render('login');
   });
 
   app.get('/metrics.json', function(req, res) {
@@ -46,6 +46,10 @@
         return res.status(200).send("Metrics saved");
       }
     });
+  });
+
+  app.post('/login', function(req, res) {
+    return console.log("post on login called");
   });
 
   app.listen(app.get('port'), function() {
