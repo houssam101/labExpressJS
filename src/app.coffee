@@ -8,6 +8,11 @@ app.set 'view engine', 'jade'
 app.use '/', express.static "#{__dirname}/../public"
 app.use require('body-parser')()
 
+app.get '/login', (req, res) ->
+  res.render 'login'
+
+
+
 app.get '/', (req, res) ->
   res.render 'index',
     locals:
@@ -15,6 +20,7 @@ app.get '/', (req, res) ->
 
 app.get '/metrics.json', (req, res) ->
   res.status(200).json metrics.get()
+
 
 app.get '/hello/:name', (req, res) ->
   res.status(200).send req.params.name

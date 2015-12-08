@@ -1,0 +1,36 @@
+extend layout
+
+block content
+  div.container
+    div.header.clearfix
+        nav
+            ul(class='nav nav-pills pull-right')
+                li(role='presentation',class='active')
+                    a(href='/') Accueil
+                li(role='presentation')
+                    a(href='/login') Login
+        h3 Lab ExpressJS
+    div.jumbotron
+        h1 Lab ExpressJS
+        p Formulaire de connexion
+        form(name="login", action="/login", method="post")
+            div.form-group
+              label(for="user") User
+              input(type="text", name="user", id="user", class="form-control")
+            div.form-group
+              label(for="pass") Password
+              input(type="password", name="pass", id="pass", class="form-control")
+            div.form-group
+              button(type="submit", class="btn btn-success") Valider
+
+  script
+    :coffee-script
+      $('#get-metrics').click (e) ->
+        e.preventDefault()
+        $.getJSON '/metrics.json', (data) ->
+          $('#content').empty()
+          c = "<table class=\"table table-bordered table-hover\"><thead><tr><th>TIMESTAMP</th><th>VALUE</th></tr></thead><tbody>"
+          for metric in data
+            c += "<tr><td>timestamp: #{metric.timestamp}</td><td>value: #{metric.value}</td></tr>"
+            c += "</tbody></table>"
+          $('#content').append c

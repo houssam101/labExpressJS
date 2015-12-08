@@ -1,24 +1,25 @@
-extend layout
+extend layout 
 
-block head
-  script(src="../public/js/jquery-2.1.4.min.js")
-  script(src="../public/js/bootstrap.min.js")
-  link(rel="stylesheet", href="../public/css/bootstrap.min.css")
-  link(rel="stylesheet", href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css")
+
 
 block content
-  div.container
+  div.container.jumbotron
     div.col-md-6.col-md-offset-3
-      button.btn.btn-success#get-metrics Hello world
-      #content
-
+        h1 Lab ExpressJS - #{locals.title}
+        p
+          button.btn.btn-success#get-metrics Hello world
+          div.well
+            p.small
+                #content
+  
   script
     :coffee-script
       $('#get-metrics').click (e) ->
         e.preventDefault()
         $.getJSON '/metrics.json', (data) ->
           $('#content').empty()
-          c = ""
-          for metric in data
-            c += "<p>timestamp: #{metric.timestamp}<br/>value: #{metric.value}</p>"
+          c = "<table class=\"table table-bordered table-hover\"><thead><tr><th>TIMESTAMP</th><th>VALUE</th></tr></thead><tbody>"
+          for metric in data 
+            c += "<tr><td>timestamp: #{metric.timestamp}</td><td>value: #{metric.value}</td></tr>"
+            c += "</tbody></table>"
           $('#content').append c

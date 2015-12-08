@@ -1,32 +1,16 @@
-db = require('./db') "#{__dirname}/../db/metrics"
+levelup = require('levelup')
+db = levelup('./db')
 
-module.exports =
-  ###
-  `get()`
-  ------
+db.put 'name', 'LevelUP', (err) ->
+  if err
+    return console.log('Ooops!', err)
+  db.get 'name', (err, value) ->
+    if err
+      return console.log('Ooops!', err)
+    console.log 'name=' + value
+    return
+  return
 
-  Returns some hard coded metrics
-  ###
-  get: () ->
-    return [
-      timestamp: new Date('2015-12-01 10:30 UTC').getTime(),
-      value: 26
-    ,
-      timestamp: new Date('2015-12-01 10:35 UTC').getTime(),
-      value: 23
-    ,
-      timestamp: new Date('2015-12-01 10:40 UTC').getTime(),
-      value: 20
-    ,
-      timestamp: new Date('2015-12-01 10:45 UTC').getTime(),
-      value: 19
-    ,
-      timestamp: new Date('2015-12-01 10:50 UTC').getTime(),
-      value: 18
-    ,
-      timestamp: new Date('2015-12-01 10:55 UTC').getTime(),
-      value: 20
-    ]
 
   ###
   `save(id, metrics, cb)`
