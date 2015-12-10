@@ -49,7 +49,14 @@
   });
 
   app.post('/login', function(req, res) {
-    return console.log("post on login called");
+    console.log("Login method called");
+    console.log("- user : " + req.body.user);
+    console.log("- pass : " + req.body.pass);
+    if ((req.body.user = "admin" && (req.body.pass = "password"))) {
+      return res.render('insert_metrics');
+    } else {
+      return res.render('login');
+    }
   });
 
   app.listen(app.get('port'), function() {

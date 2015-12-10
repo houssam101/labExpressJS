@@ -29,8 +29,13 @@ app.post '/metric/:id.json', (req, res) ->
     if err then res.status(500).json err
     else res.status(200).send "Metrics saved"
 
+
 app.post '/login', (req, res) ->
-  console.log "post on login called"
+  console.log "Login method called"
+  console.log "- user : " + req.body.user
+  console.log "- pass : " + req.body.pass
+  if (req.body.user = "admin" && req.body.pass = "password") then res.render 'insert_metrics'
+  else res.render 'login'
 
 app.listen app.get('port'), () ->
   console.log "listening on #{app.get 'port'}"

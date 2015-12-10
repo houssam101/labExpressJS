@@ -10,16 +10,19 @@ block content
                 li(role='presentation')
                     a(href='/insert-metrics') Insert metrics
         h3 ExpressJS Lab
+    div(class="alert alert-success",role="alert")
+        button(type="button",class="close",data-dismiss="alert",aria-label="Close")
+            span(aria-hidden="true") &times;
+        b Congratulations!
+        p You're well connected.
+            i(class="fa fa-smile-o")
     div.jumbotron
         h1 Insert metrics
         p You can insert metrics using this form.
         form(name="login", action="/login", method="post")
             div.form-group
-              label(for="user") User
-              input(type="text", name="user", id="user", class="form-control")
-            div.form-group
-              label(for="pass") Password
-              input(type="password", name="pass", id="pass", class="form-control")
+              label(for="user") Value
+              input(type="number", name="value", id="value", class="form-control")
             div.form-group
               button(type="submit", class="btn btn-success") Valider
 

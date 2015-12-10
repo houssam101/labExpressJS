@@ -6,13 +6,21 @@ block content
         nav
             ul(class='nav nav-pills pull-right')
                 li(role='presentation',class='active')
-                    a(href='/') Index
+                    a(href='/')
+                        i(class="fa fa-home")
+                        span  Index
                 li(role='presentation')
-                    a(href='/insert-metrics') Insert metrics
+                    a(href='/insert-metrics')
+                        i(class="fa fa-plus")
+                        span  Insert metrics
         h3 ExpressJS Lab
     div.jumbotron
-        h1 ExpressJS Lab
-        p Connection form
+        h1
+            i(class="fa fa-flask")
+            span  ExpressJS Lab
+        p
+            i(class="fa fa-sign-in")
+            span  Connection form
         form(name="login", action="/login", method="post")
             div.form-group
               label(for="user") User
@@ -21,7 +29,19 @@ block content
               label(for="pass") Password
               input(type="password", name="pass", id="pass", class="form-control")
             div.form-group
-              button(type="submit", class="btn btn-success") Valider
+              button(type="submit", class="btn btn-success btn-sm") Valider
+
+        p Just bellow, a set of login/password which can be used to connect
+        table(class="table table-condensed table-bordered table-hover",style="text-align:left")
+            thead
+                tr
+                    th Login
+                    th Password
+
+            tbody
+                tr
+                    td admin
+                    td password
 
   script
     :coffee-script
