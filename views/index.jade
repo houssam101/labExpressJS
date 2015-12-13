@@ -1,0 +1,34 @@
+doctype
+html
+    head
+        title #{title} - Authentification
+        link(rel='stylesheet', href='app.css')
+    body
+        header
+            h1 Login
+            form#login(action="/login", method="post", role="form")
+            table
+        tr
+          th
+            label(for="login-username") Username
+          td
+            input#login-username.form-control(type='text', name="username")
+        tr
+
+          th
+            label(for="login-password") Password
+          td
+            input#login-password.form-control(type='password', name="password")
+        tr
+
+          th
+          td
+            //- button.btn.btn-primary(type='button') Login
+            //- button.btn.btn-default(type='button') Signin
+            input.btn.btn-primary(type='submit', value="Login")
+            input.btn.btn-default(type='submit', value="Signin")
+        .container
+            .main-content
+                block content
+            .sidebar
+                block sidebar

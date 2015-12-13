@@ -1,6 +1,13 @@
 levelup = require('levelup')
 db = levelup('./db')
 
+module.exports =
+  get: (value) ->
+    console.log "GET METHOD CALLED, value = " + value
+
+
+
+
 db.put 'name', 'LevelUP', (err) ->
   if err
     return console.log('Ooops!', err)
@@ -30,3 +37,7 @@ db.put 'name', 'LevelUP', (err) ->
       {timestamp, value} = m
       ws.write key: "metric:#{id}:#{timestamp}", value: value
     ws.end()
+
+  ###
+
+###

@@ -22,6 +22,10 @@
     return res.render('login');
   });
 
+  app.get('/display-metrics', function(req, res) {
+    return res.render('display_metrics');
+  });
+
   app.get('/insert-metrics', function(req, res) {
     return res.render('insert_metrics');
   });
@@ -38,6 +42,10 @@
     return res.status(200).send(req.params.name);
   });
 
+  app.post('/insert-metric', function(req, res) {
+    return metrics.get(req.body.value);
+  });
+
   app.post('/metric/:id.json', function(req, res) {
     return metrics.save(req.params.id, req.body, function(err) {
       if (err) {
@@ -52,7 +60,8 @@
     console.log("Login method called");
     console.log("- user : " + req.body.user);
     console.log("- pass : " + req.body.pass);
-    if ((req.body.user = "admin" && (req.body.pass = "password"))) {
+    if (req.body.user === "admin" && req.body.pass === "password") {
+      res.locals.connected = "test";
       return res.render('insert_metrics');
     } else {
       return res.render('login');

@@ -6,6 +6,12 @@
 
   db = levelup('./db');
 
+  module.exports = {
+    get: function(value) {
+      return console.log("GET METHOD CALLED, value = " + value);
+    }
+  };
+
   db.put('name', 'LevelUP', function(err) {
     if (err) {
       return console.log('Ooops!', err);
@@ -44,6 +50,9 @@
         }
         return ws.end();
       }
+
+      /*
+       */
     };
   });
 
