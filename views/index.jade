@@ -1,34 +1,24 @@
-doctype
-html
-    head
-        title #{title} - Authentification
-        link(rel='stylesheet', href='app.css')
-    body
-        header
-            h1 Login
-            form#login(action="/login", method="post", role="form")
-            table
-        tr
-          th
-            label(for="login-username") Username
-          td
-            input#login-username.form-control(type='text', name="username")
-        tr
+extend layout
 
-          th
-            label(for="login-password") Password
-          td
-            input#login-password.form-control(type='password', name="password")
-        tr
+block head
+  script(src="../public/js/jquery-2.1.4.min.js")
+  script(src="../public/js/bootstrap.min.js")
+  link(rel="stylesheet", href="../public/css/bootstrap.min.css")
+  link(rel="stylesheet", href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css")
 
-          th
-          td
-            //- button.btn.btn-primary(type='button') Login
-            //- button.btn.btn-default(type='button') Signin
-            input.btn.btn-primary(type='submit', value="Login")
-            input.btn.btn-default(type='submit', value="Signin")
-        .container
-            .main-content
-                block content
-            .sidebar
-                block sidebar
+block content
+  div.container
+    div.col-md-6.col-md-offset-3
+      button.btn.btn-success#get-metrics Hello world
+      #content
+
+  script
+    :coffee-script
+      $('#get-metrics').click (e) ->
+        e.preventDefault()
+        $.getJSON '/metrics.json', (data) ->
+          $('#content').empty()
+          c = ""
+          for metric in data
+            c += "<p>timestamp: #{metric.timestamp}<br/>value: #{metric.value}</p>"
+          $('#content').append c
