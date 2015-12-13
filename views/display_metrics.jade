@@ -5,7 +5,7 @@ block content
     div.header.clearfix
          nav
                     ul(class='nav nav-pills pull-right')
-                        li(role='presentation',class='active')
+                        li(role='presentation')
                             a(href='/')
                                 i(class="fa fa-home")
                                 span  Index
@@ -13,6 +13,10 @@ block content
                             a(href='/insert-metrics')
                                 i(class="fa fa-plus")
                                 span  Insert metrics
+                        li(role='presentation',class='active')
+                            a(href='/display-metrics')
+                                i(class="fa fa-pie-chart")
+                                span  Display metrics
          h3 ExpressJS Lab
     if connected
         div(class="alert alert-success",role="alert")
@@ -25,6 +29,12 @@ block content
         h1
             i(class="fa fa-pie-chart")
             span  display metrics
+
+        div#display-metrics
+        button(onClick="changeData()") Change Data
+
+
+
 
 
 
@@ -39,3 +49,45 @@ block content
             c += "<tr><td>timestamp: #{metric.timestamp}</td><td>value: #{metric.value}</td></tr>"
             c += "</tbody></table>"
           $('#content').append c
+
+      salesData = [
+        {
+          label: 'Basic'
+          color: '#3366CC'
+        }
+        {
+          label: 'Plus'
+          color: '#DC3912'
+        }
+        {
+          label: 'Lite'
+          color: '#FF9900'
+        }
+        {
+          label: 'Elite'
+          color: '#109618'
+        }
+        {
+          label: 'Delux'
+          color: '#990099'
+        }
+      ]
+      svg = d3.select('#display-metrics').append('svg').attr('width', 700).attr('height', 400)
+
+      changeData = ->
+        gradPie.transition 'salespie', randomData(), 160
+        gradPie.transition 'quotespie', randomData(), 100
+        return
+
+      randomData = ->
+        salesData.map (d) ->
+          {
+            label: d.label
+            value: 1000 * Math.random()
+            color: d.color
+          }
+
+      svg.append('g').attr 'id', 'salespie'
+      svg.append('g').attr 'id', 'quotespie'
+      gradPie.draw 'salespie', randomData(), 200, 200, 160
+      gradPie.draw 'quotespie', randomData(), 500, 200, 100

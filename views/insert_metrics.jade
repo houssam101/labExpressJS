@@ -5,14 +5,18 @@ block content
     div.header.clearfix
          nav
                     ul(class='nav nav-pills pull-right')
-                        li(role='presentation',class='active')
+                        li(role='presentation')
                             a(href='/')
                                 i(class="fa fa-home")
                                 span  Index
-                        li(role='presentation')
+                        li(role='presentation',class='active')
                             a(href='/insert-metrics')
                                 i(class="fa fa-plus")
                                 span  Insert metrics
+                        li(role='presentation')
+                            a(href='/display-metrics')
+                                i(class="fa fa-pie-chart")
+                                span  Display metrics
          h3 ExpressJS Lab
     if connected
         div(class="alert alert-success",role="alert")
@@ -44,3 +48,6 @@ block content
             c += "<tr><td>timestamp: #{metric.timestamp}</td><td>value: #{metric.value}</td></tr>"
             c += "</tbody></table>"
           $('#content').append c
+
+
+
