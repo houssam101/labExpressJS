@@ -31,10 +31,6 @@ block content
             span  display metrics
 
         div#display-metrics
-        button(onClick="changeData()") Change Data
-
-
-
 
 
 
@@ -73,11 +69,6 @@ block content
         }
       ]
       svg = d3.select('#display-metrics').append('svg').attr('width', 700).attr('height', 400)
-
-      changeData = ->
-        gradPie.transition 'salespie', randomData(), 160
-        gradPie.transition 'quotespie', randomData(), 100
-        return
 
       randomData = ->
         salesData.map (d) ->
