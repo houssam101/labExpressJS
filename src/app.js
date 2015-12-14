@@ -33,15 +33,17 @@
 
   authCheck = function(req, res, next) {
     if (req.session.loggedIn !== true) {
+      req.session.loggedIn = false;
+      res.locals.connected = false;
+      req.session.user = null;
       return res.redirect('/login');
     } else {
+      req.session.loggedIn = true;
+      res.locals.connected = true;
+      res.locals.user = req.session.user;
       return next();
     }
   };
-
-  app.get('/login', function(req, res) {
-    return res.render('login');
-  });
 
   app.get('/logout', function(req, res) {
     req.session.loggedIn = false;
@@ -51,9 +53,6 @@
   });
 
   app.get('/', authCheck, function(req, res) {
-    if (res.locals.connected !== true) {
-      res.locals.connected = false;
-    }
     return res.render('login');
   });
 
@@ -98,6 +97,10 @@
     });
   });
 
+  app.get('/login', function(req, res) {
+    return res.render('login');
+  });
+
   app.post('/login', function(req, res) {
     console.log("Login method called");
     console.log("- user : " + req.body.user);
@@ -106,8 +109,13 @@
       res.locals.connected = true;
       req.session.loggedIn = true;
       req.session.user = req.body.user;
+      res.locals.user = req.body.user;
       return res.render('insert_metrics');
     } else {
+      res.locals.connected = false;
+      req.session.loggedIn = false;
+      req.session.user = null;
+      res.locals.error_login = true;
       return res.render('login');
     }
   });

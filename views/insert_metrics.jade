@@ -9,22 +9,24 @@ block content
                             a(href='/')
                                 i(class="fa fa-home")
                                 span  Index
-                        li(role='presentation',class='active')
-                            a(href='/insert-metrics')
-                                i(class="fa fa-plus")
-                                span  Insert metrics
-                        li(role='presentation')
-                            a(href='/display-metrics')
-                                i(class="fa fa-pie-chart")
-                                span  Display metrics
-         h3 ExpressJS Lab
-    if connected
-        div(class="alert alert-success",role="alert")
-            button(type="button",class="close",data-dismiss="alert",aria-label="Close")
-                span(aria-hidden="true") &times;
-            b Congratulations!
-            p You're well connected.
-                i(class="fa fa-smile-o")
+                        if locals.connected == true
+                            li(role='presentation',class="active")
+                                a(href='/insert-metrics')
+                                    i(class="fa fa-plus")
+                                    span  Insert metrics
+                            li(role='presentation')
+                                a(href='/display-metrics')
+                                    i(class="fa fa-pie-chart")
+                                    span  Display metrics
+                            li(role='presentation')
+                                a(href='/generate-user-db')
+                                    i(class="fa fa-database")
+                                    span  Generate users database
+                            li(role='presentation')
+                                a(href='/logout')
+                                    i(class="fa fa-sign-out")
+                                    span  Logout #{locals.user}
+
     div.jumbotron
         h1
             i(class="fa fa-plus")

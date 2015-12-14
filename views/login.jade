@@ -3,33 +3,36 @@ extend layout
 block content
   div.container
     div.header.clearfix
-        nav
-            ul(class='nav nav-pills pull-right')
-                li(role='presentation',class='active')
-                    a(href='/')
-                        i(class="fa fa-home")
-                        span  Index
-
-                if locals.connected == true
-                    li(role='presentation')
-                        a(href='/insert-metrics')
-                            i(class="fa fa-plus")
-                            span  Insert metrics
-                    li(role='presentation')
-                        a(href='/display-metrics')
-                            i(class="fa fa-pie-chart")
-                            span  Display metrics
-                    li(role='presentation')
-                        a(href='/generate-user-db')
-                            i(class="fa fa-database")
-                            span  Generate users database
-                    li(role='presentation')
-                        a(href='/logout')
-                            i(class="fa fa-sign-out")
-                            span  Logout
+         nav
+                    ul(class='nav nav-pills pull-right')
+                        li(role='presentation',class="active")
+                            a(href='/')
+                                i(class="fa fa-home")
+                                span  Index
+                        if locals.connected == true
+                            li(role='presentation')
+                                a(href='/insert-metrics')
+                                    i(class="fa fa-plus")
+                                    span  Insert metrics
+                            li(role='presentation')
+                                a(href='/display-metrics')
+                                    i(class="fa fa-pie-chart")
+                                    span  Display metrics
+                            li(role='presentation')
+                                a(href='/generate-user-db')
+                                    i(class="fa fa-database")
+                                    span  Generate users database
+                            li(role='presentation')
+                                a(href='/logout')
+                                    i(class="fa fa-sign-out")
+                                    span  Logout #{locals.user}
 
     if locals.error_login == true
-        p Error in connection process (check your login and password! It might be wrong.)
+        div(class="alert alert-danger")
+            a(href="#", class="close", data-dismiss="alert", aria-label="close") &times;
+            p
+                b Connection error
+                p Check your login and password! It might be wrong.
     div.jumbotron
         h1
             i(class="fa fa-flask")
@@ -48,17 +51,20 @@ block content
                 div.form-group
                   button(type="submit", class="btn btn-success btn-sm") Valider
 
-        p Just bellow, a set of login/password which can be used to connect
-        table(class="table table-condensed table-bordered table-hover",style="text-align:left")
-            thead
-                tr
-                    th Login
-                    th Password
+            p Just bellow, a set of login/password which can be used to connect
+            table(class="table table-condensed table-bordered table-hover",style="text-align:left")
+                thead
+                    tr
+                        th Login
+                        th Password
 
-            tbody
-                tr
-                    td admin
-                    td password
+                tbody
+                    tr
+                        td admin
+                        td password
+
+        else
+            p You are already connected
 
   script
     :coffee-script

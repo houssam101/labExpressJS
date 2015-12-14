@@ -18,12 +18,15 @@ app.use session
 
 authCheck = (req, res, next) ->
   unless req.session.loggedIn == true
+    req.session.loggedIn = false
+    res.locals.connected = false
+    req.session.user = null
     res.redirect '/login'
   else
+    req.session.loggedIn = true
+    res.locals.connected = true
+    res.locals.user = req.session.user
     next()
-
-app.get '/login', (req, res) ->
-  res.render 'login'
 
 app.get '/logout', (req, res) ->
   req.session.loggedIn = false
@@ -32,8 +35,6 @@ app.get '/logout', (req, res) ->
   res.render 'login'
 
 app.get '/', authCheck, (req, res) ->
-  if res.locals.connected != true
-  then res.locals.connected = false
   res.render 'login'
 
 app.get '/generate-user-db', authCheck, (req, res) ->
@@ -65,16 +66,25 @@ app.post '/metric/:id.json', authCheck, (req, res) ->
     if err then res.status(500).json err
     else res.status(200).send "Metrics saved"
 
+app.get '/login', (req, res) ->
+  res.render 'login'
+
 app.post '/login', (req, res) ->
   console.log "Login method called"
   console.log "- user : " + req.body.user
   console.log "- pass : " + req.body.pass
+
   if req.body.user == "admin" and req.body.pass == "password"
     res.locals.connected = true
     req.session.loggedIn = true
     req.session.user = req.body.user
+    res.locals.user = req.body.user
     res.render 'insert_metrics'
   else
+    res.locals.connected = false
+    req.session.loggedIn = false
+    req.session.user = null
+    res.locals.error_login = true
     res.render 'login'
 
 app.listen app.get('port'), () ->
