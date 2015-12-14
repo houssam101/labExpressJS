@@ -11,21 +11,13 @@ block content
                                 span  Index
                         if locals.connected == true
                             li(role='presentation')
-                                a(href='/insert-metrics')
-                                    i(class="fa fa-plus")
-                                    span  Insert metrics
-                            li(role='presentation')
-                                a(href='/display-metrics')
-                                    i(class="fa fa-pie-chart")
-                                    span  Display metrics
-                            li(role='presentation')
-                                a(href='/generate-user-db')
-                                    i(class="fa fa-database")
-                                    span  Generate users database
+                                a(href='/my-metrics')
+                                    i(class="fa fa-table")
+                                    span  My metrics
                             li(role='presentation')
                                 a(href='/logout')
                                     i(class="fa fa-sign-out")
-                                    span  Logout #{locals.user}
+                                    span  Logout [ #{locals.user} ]
 
     if locals.error_login == true
         div(class="alert alert-danger")
@@ -62,6 +54,10 @@ block content
                     tr
                         td admin
                         td password
+
+            p You can also
+                a(href="/signup")  create a account
+
 
         else
             p You are already connected

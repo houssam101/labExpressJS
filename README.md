@@ -1,5 +1,9 @@
 # ExpressJS, front-end & storage
 
+## Authors
+- Vincent Rakotomanga
+- Houssam Kamal
+
 ## About this code
 
 Project is developed using [coffee](http://coffeescript.org/) and [jade](http://jade-lang.com/).

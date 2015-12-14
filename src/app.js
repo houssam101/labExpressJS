@@ -25,7 +25,7 @@
   app.use(require('body-parser')());
 
   app.use(session({
-    secret: '35k6itUdYceaqQtqGlW0jBIA1RF',
+    secret: '35ktqG6A1RFitUdYA1RFceaqQtqGlA1RFW0jBIA1RFtqG',
     store: new LevelStore('../db/sessions'),
     resave: true,
     saveUninitialized: true
@@ -36,7 +36,11 @@
       req.session.loggedIn = false;
       res.locals.connected = false;
       req.session.user = null;
-      return res.redirect('/login');
+      if (req.url === '/signup') {
+        return res.render('signup');
+      } else {
+        return res.render('login');
+      }
     } else {
       req.session.loggedIn = true;
       res.locals.connected = true;
@@ -56,32 +60,22 @@
     return res.render('login');
   });
 
-  app.get('/generate-user-db', authCheck, function(req, res) {
-    db.auto_generate_user_db;
-    return res.render('login');
-  });
-
-  app.get('/display-metrics', authCheck, function(req, res) {
-    console.log("db.get_association timestamp = " + db.get_association('admin'));
-    return res.render('display_metrics');
-  });
-
-  app.get('/insert-metrics', authCheck, function(req, res) {
-    console.log("req.session.name = " + req.session.name);
-    return res.render('insert_metrics');
+  app.get('/my-metrics', authCheck, function(req, res) {
+    console.log("req.session.user = " + req.session.user);
+    return res.render('my_metrics');
   });
 
   app.get('/metrics.json', authCheck, function(req, res) {
-    return res.status(200).json(metrics.get());
+    return res.status(200).json(db.get_metrics_from_username(req.session.user, callback));
   });
 
   app.get('/hello/:name', authCheck, function(req, res) {
     return res.status(200).send(req.params.name);
   });
 
-  app.post('/insert-metric', authCheck, function(req, res) {
+  app.post('/my-metrics', authCheck, function(req, res) {
     var timestamp, username;
-    username = 'admin';
+    username = req.session.user;
     timestamp = (new Date).getTime().toString();
     db.put_metrics(timestamp, req.body.value);
     return db.put_association(username, timestamp);
@@ -101,6 +95,20 @@
     return res.render('login');
   });
 
+  app.get('/signup', authCheck, function(req, res) {
+    return res.render('signup');
+  });
+
+  app.post('/signup', authCheck, function(req, res) {
+    return user.save(req.body.username, req.body.password, function(err, data) {
+      if (err) {
+        throw error;
+      } else {
+        return res.redirect('/login');
+      }
+    });
+  });
+
   app.post('/login', function(req, res) {
     console.log("Login method called");
     console.log("- user : " + req.body.user);
@@ -110,7 +118,7 @@
       req.session.loggedIn = true;
       req.session.user = req.body.user;
       res.locals.user = req.body.user;
-      return res.render('insert_metrics');
+      return res.render('my_metrics');
     } else {
       res.locals.connected = false;
       req.session.loggedIn = false;

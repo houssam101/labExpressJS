@@ -5,8 +5,26 @@ levelup = require('levelup')
 user_db = levelup('./db/user_db') ## user
 association_db = levelup('./db/association_db') ## user to metrics
 metrics_db = levelup('./db/metrics_db') ## metrics
+db = require './db'
 
 module.exports =
+
+  get_metrics_from_username: (username, callback) ->
+
+    metrics = []
+    metric = []
+    rs = metrics_db.createReadStream
+      gte: "metrics:#{username}:1"
+      lte: "metrics:#{username}:999999999999"
+    rs.on 'data', (data) ->
+      value = data.value.split ":"
+      metric.push(timestamp: parseInt(value[1]), value: parseInt(value[2]))
+      return metric
+
+    rs.on 'error', callback
+
+    rs.on 'close', ->
+      callback null, metric
 
 ## ASSOCIATION (BETWEEN USER AND METRICS) METHODS
   auto_generate_user_db: (key, value) ->
@@ -67,6 +85,7 @@ module.exports =
       if err
         return console.log('Error in deleting some data in user_db', err)
       console.log 'Success in deleting some data in user_db - key : ' + key
+
 
 ###
 db.put 'name', 'LevelUP', (err) ->

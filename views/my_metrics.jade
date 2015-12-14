@@ -1,0 +1,112 @@
+extend layout
+
+block content
+  div.container
+    div.header.clearfix
+         nav
+                    ul(class='nav nav-pills pull-right')
+                        li(role='presentation')
+                            a(href='/')
+                                i(class="fa fa-home")
+                                span  Index
+                        if locals.connected == true
+                            li(role='presentation',class="active")
+                                a(href='/my-metrics')
+                                    i(class="fa fa-table")
+                                    span  My metrics
+                            li(role='presentation')
+                                a(href='/logout')
+                                    i(class="fa fa-sign-out")
+                                    span  Logout [ #{locals.user} ]
+
+    div.jumbotron
+
+
+
+        h1
+            i(class="fa fa-pie-chart")
+            span  My metrics
+
+        div#display-metrics
+
+
+        h1
+            i(class="fa fa-plus")
+            span  Insert metrics
+        p You can insert metrics using this form.
+        form(name="login", action="/my-metrics", method="post")
+            div.row
+                div.col-sm-6
+                    div#datepicker
+                    input(type="text", name="date", id="date", class="form-control", required="true")
+
+                div.col-sm-6
+                    div.form-group
+                      label(for="user") Value
+                      input(type="number", name="value", id="value", class="form-control",required="true")
+                    div.form-group
+                      button(type="submit", class="btn btn-success") Insert this metric
+
+
+
+  script
+    :coffee-script
+      $('#get-metrics').click (e) ->
+        e.preventDefault()
+        $.getJSON '/metrics.json', (data) ->
+          $('#content').empty()
+          c = "<table class=\"table table-bordered table-hover\"><thead><tr><th>TIMESTAMP</th><th>VALUE</th></tr></thead><tbody>"
+          for metric in data
+            c += "<tr><td>timestamp: #{metric.timestamp}</td><td>value: #{metric.value}</td></tr>"
+            c += "</tbody></table>"
+          $('#content').append c
+
+      $('#datepicker').datepicker
+        maxViewMode: 1
+        todayHighlight: true
+        format: 'dd/mm/yyyy'
+
+      margin =
+        top: 40
+        right: 10
+        bottom: 10
+        left: 10
+      width = 600 - (margin.left) - (margin.right)
+      height = 500 - (margin.top) - (margin.bottom)
+      color = d3.scale.category20c()
+      treemap = d3.layout.treemap().size([
+        width
+        height
+      ]).sticky(true).value((d) ->
+        d.size
+      )
+      div = d3.select('#display-metrics').style('position', 'relative').style('width', width + margin.left + margin.right + 'px').style('height', height + margin.top + margin.bottom + 'px').style('left', margin.left + 'px').style('top', margin.top + 'px')
+
+      position = ->
+        @style('left', (d) ->
+          d.x + 'px'
+        ).style('top', (d) ->
+          d.y + 'px'
+        ).style('width', (d) ->
+          Math.max(0, d.dx - 1) + 'px'
+        ).style 'height', (d) ->
+          Math.max(0, d.dy - 1) + 'px'
+        return
+
+      d3.json 'http://localhost:1889/test.json', (error, root) ->
+        if error
+          throw error
+        node = div.datum(root).selectAll('.node').data(treemap.nodes).enter().append('div').attr('class', 'node').call(position).style('background', (d) ->
+          if d.children then color(d.name) else null
+        ).text((d) ->
+          if d.children then null else d.name
+        )
+        d3.selectAll('input').on 'change', ->
+          value = if @value == 'count' then (->
+            1
+          ) else ((d) ->
+            d.size
+          )
+          node.data(treemap.value(value).nodes).transition().duration(1500).call position
+          return
+        return

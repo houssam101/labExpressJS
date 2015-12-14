@@ -1,0 +1,37 @@
+extend layout
+
+block content
+  div.container
+    div.header.clearfix
+         nav
+                    ul(class='nav nav-pills pull-right')
+                        li(role='presentation',class="active")
+                            a(href='/')
+                                i(class="fa fa-home")
+                                span  Index
+                        if locals.connected == true
+                            li(role='presentation')
+                                a(href='/my-metrics')
+                                    i(class="fa fa-table")
+                                    span  My metrics
+                            li(role='presentation')
+                                a(href='/logout')
+                                    i(class="fa fa-sign-out")
+                                    span  Logout [ #{locals.user} ]
+
+    div.jumbotron
+        h1
+            i(class="fa fa-flask")
+            span  ExpressJS Lab
+        p
+            i(class="fa fa-sign-in")
+            span  Signup form
+        form(name="login", action="/login", method="post")
+            div.form-group
+              label(for="user") User
+              input(type="text", name="user", id="user", class="form-control")
+            div.form-group
+              label(for="pass") Password
+              input(type="password", name="pass", id="pass", class="form-control")
+            div.form-group
+              button(type="submit", class="btn btn-success btn-sm") Create new user
