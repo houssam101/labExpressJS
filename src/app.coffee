@@ -45,7 +45,7 @@ app.get '/my-metrics', authCheck, (req, res) ->
   res.render 'my_metrics'
 
 app.get '/metrics.json', authCheck, (req, res) ->
-  res.status(200).json db.get_metrics_from_username(req.session.user, callback)
+  res.status(200).json db.get(req.session.user)
 
 app.get '/hello/:name', authCheck, (req, res) ->
   res.status(200).send req.params.name

@@ -17,11 +17,15 @@
   db = require('./db');
 
   module.exports = {
-    get_metrics_from_username: function(username, callback) {
+    get: function(username, callback) {
       var metric, metrics, rs;
       metrics = [];
       metric = [];
       rs = metrics_db.createReadStream({
+        limit: 100,
+        reverse: true,
+        keys: true,
+        values: true,
         gte: "metrics:" + username + ":1",
         lte: "metrics:" + username + ":999999999999"
       });
@@ -38,6 +42,22 @@
       return rs.on('close', function() {
         return callback(null, metric);
       });
+    },
+    save: function(user, x, callback) {
+      var i, index, len, metric, timestamp, value, ws;
+      ws = db.createWriteStream();
+      ws.on('error', callback);
+      ws.on('close', callback);
+      for (index = i = 0, len = x.length; i < len; index = ++i) {
+        metric = x[index];
+        timestamp = metric.timestamp, value = metric.value;
+        ws.write({
+          key: "metrics:" + user + ":" + (index + 1),
+          value: "metrics:" + timestamp + ":" + value
+        });
+      }
+      console.log("Batch saved !");
+      return ws.end();
     },
     auto_generate_user_db: function(key, value) {
       return user_db.batch().del('father').put('admin', 'password').put('tata', 'toto').write(function() {

@@ -66,7 +66,7 @@
   });
 
   app.get('/metrics.json', authCheck, function(req, res) {
-    return res.status(200).json(db.get_metrics_from_username(req.session.user, callback));
+    return res.status(200).json(db.get(req.session.user));
   });
 
   app.get('/hello/:name', authCheck, function(req, res) {

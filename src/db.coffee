@@ -9,11 +9,14 @@ db = require './db'
 
 module.exports =
 
-  get_metrics_from_username: (username, callback) ->
-
+  get: (username, callback) ->
     metrics = []
     metric = []
     rs = metrics_db.createReadStream
+      limit: 100
+      reverse: true
+      keys: true
+      values: true
       gte: "metrics:#{username}:1"
       lte: "metrics:#{username}:999999999999"
     rs.on 'data', (data) ->
@@ -25,6 +28,16 @@ module.exports =
 
     rs.on 'close', ->
       callback null, metric
+
+  save: (user, x, callback)->
+    ws = db.createWriteStream()
+    ws.on 'error', callback
+    ws.on 'close', callback
+    for metric, index in x
+      {timestamp, value} = metric
+      ws.write key: "metrics:#{user}:#{index+1}", value: "metrics:#{timestamp}:#{value}"
+    console.log "Batch saved !"
+    ws.end()
 
 ## ASSOCIATION (BETWEEN USER AND METRICS) METHODS
   auto_generate_user_db: (key, value) ->
