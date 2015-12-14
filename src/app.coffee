@@ -1,7 +1,7 @@
 express = require 'express'
 app = express()
 levelup = require('levelup')
-metrics = require './metrics'
+db = require './db'
 
 app.set 'port', 1889
 app.set 'views', "#{__dirname}/../views"
@@ -10,6 +10,10 @@ app.use '/', express.static "#{__dirname}/../public"
 app.use require('body-parser')()
 
 app.get '/login', (req, res) ->
+  res.render 'login'
+
+app.get '/generate-user-db', (req, res) ->
+  db.auto_generate_user_db
   res.render 'login'
 
 app.get '/display-metrics', (req, res) ->
@@ -30,11 +34,11 @@ app.get '/hello/:name', (req, res) ->
 app.post '/insert-metric', (req,res) ->
   username='admin'
   timestamp = (new Date).getTime().toString()
-  metrics.put_metrics timestamp,req.body.value
-  metrics.put_association username,timestamp
+  db.put_metrics timestamp,req.body.value
+  db.put_association username,timestamp
 
 app.post '/metric/:id.json', (req, res) ->
-  metrics.save req.params.id, req.body, (err) ->
+  db.save req.params.id, req.body, (err) ->
     if err then res.status(500).json err
     else res.status(200).send "Metrics saved"
 
