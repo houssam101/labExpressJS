@@ -42,8 +42,7 @@
         if (err) {
           return console.log('Error in deleting some data in association_db', err);
         }
-        console.log('Success in deleting some data in association_db - key : ' + key);
-        return value;
+        return console.log('Success in deleting some data in association_db - key : ' + key);
       });
     },
     put_metrics: function(key, value) {
@@ -94,8 +93,7 @@
         if (err) {
           return console.log('Error in deleting some data in user_db', err);
         }
-        console.log('Success in deleting some data in user_db - key : ' + key);
-        return value;
+        return console.log('Success in deleting some data in user_db - key : ' + key);
       });
     }
   };

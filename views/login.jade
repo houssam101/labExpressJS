@@ -9,36 +9,44 @@ block content
                     a(href='/')
                         i(class="fa fa-home")
                         span  Index
-                li(role='presentation')
-                    a(href='/insert-metrics')
-                        i(class="fa fa-plus")
-                        span  Insert metrics
-                li(role='presentation')
-                    a(href='/display-metrics')
-                        i(class="fa fa-pie-chart")
-                        span  Display metrics
-                li(role='presentation')
-                    a(href='/generate-user-db')
-                        i(class="fa fa-database")
-                        span  Generate users database
-        h3 ExpressJS Lab
 
+                if locals.connected == true
+                    li(role='presentation')
+                        a(href='/insert-metrics')
+                            i(class="fa fa-plus")
+                            span  Insert metrics
+                    li(role='presentation')
+                        a(href='/display-metrics')
+                            i(class="fa fa-pie-chart")
+                            span  Display metrics
+                    li(role='presentation')
+                        a(href='/generate-user-db')
+                            i(class="fa fa-database")
+                            span  Generate users database
+                    li(role='presentation')
+                        a(href='/logout')
+                            i(class="fa fa-sign-out")
+                            span  Logout
+
+    if locals.error_login == true
+        p Error in connection process (check your login and password! It might be wrong.)
     div.jumbotron
         h1
             i(class="fa fa-flask")
             span  ExpressJS Lab
-        p
-            i(class="fa fa-sign-in")
-            span  Connection form
-        form(name="login", action="/login", method="post")
-            div.form-group
-              label(for="user") User
-              input(type="text", name="user", id="user", class="form-control")
-            div.form-group
-              label(for="pass") Password
-              input(type="password", name="pass", id="pass", class="form-control")
-            div.form-group
-              button(type="submit", class="btn btn-success btn-sm") Valider
+        if locals.connected == false
+            p
+                i(class="fa fa-sign-in")
+                span  Connection form
+            form(name="login", action="/login", method="post")
+                div.form-group
+                  label(for="user") User
+                  input(type="text", name="user", id="user", class="form-control")
+                div.form-group
+                  label(for="pass") Password
+                  input(type="password", name="pass", id="pass", class="form-control")
+                div.form-group
+                  button(type="submit", class="btn btn-success btn-sm") Valider
 
         p Just bellow, a set of login/password which can be used to connect
         table(class="table table-condensed table-bordered table-hover",style="text-align:left")
