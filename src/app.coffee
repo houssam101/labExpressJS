@@ -1,5 +1,6 @@
 express = require 'express'
 app = express()
+levelup = require('levelup')
 metrics = require './metrics'
 
 app.set 'port', 1889
@@ -23,12 +24,14 @@ app.get '/', (req, res) ->
 app.get '/metrics.json', (req, res) ->
   res.status(200).json metrics.get()
 
-
 app.get '/hello/:name', (req, res) ->
   res.status(200).send req.params.name
 
 app.post '/insert-metric', (req,res) ->
-  metrics.get req.body.value
+  username='admin'
+  timestamp = (new Date).getTime().toString()
+  metrics.put_metrics timestamp,req.body.value
+  metrics.put_association username,timestamp
 
 app.post '/metric/:id.json', (req, res) ->
   metrics.save req.params.id, req.body, (err) ->

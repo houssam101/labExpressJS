@@ -33,7 +33,6 @@ block content
         div#display-metrics
 
 
-
   script
     :coffee-script
       $('#get-metrics').click (e) ->
@@ -79,6 +78,4 @@ block content
           }
 
       svg.append('g').attr 'id', 'salespie'
-      svg.append('g').attr 'id', 'quotespie'
       gradPie.draw 'salespie', randomData(), 200, 200, 160
-      gradPie.draw 'quotespie', randomData(), 500, 200, 100
