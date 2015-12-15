@@ -3,6 +3,7 @@
 ## Authors
 - Vincent Rakotomanga
 - Houssam Kamal
+Gr. SII2
 
 ## About this code
 
