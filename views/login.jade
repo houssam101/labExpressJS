@@ -43,20 +43,16 @@ block content
                 div.form-group
                   button(type="submit", class="btn btn-success btn-sm") Valider
 
-            p Just bellow, a set of login/password which can be used to connect
-            table(class="table table-condensed table-bordered table-hover",style="text-align:left")
-                thead
-                    tr
-                        th Login
-                        th Password
+            p Just bellow, a set of login/password which can be used to connect (click on the button)
+            p
+                button(id="get-users",class="btn btn-primary btn-sm")
+                    i(class="fa fa-users")
+                    span  Display existing users in database
 
-                tbody
-                    tr
-                        td admin
-                        td password
+            div#users-table
 
-            p You can also
-                a(href="/signup")  create a account
+            p
+                a(href="/signup") Create a account !
 
 
         else
@@ -64,12 +60,13 @@ block content
 
   script
     :coffee-script
-      $('#get-metrics').click (e) ->
+      $('#get-users').click (e) ->
         e.preventDefault()
-        $.getJSON '/metrics.json', (data) ->
-          $('#content').empty()
-          c = "<table class=\"table table-bordered table-hover\"><thead><tr><th>TIMESTAMP</th><th>VALUE</th></tr></thead><tbody>"
-          for metric in data
-            c += "<tr><td>timestamp: #{metric.timestamp}</td><td>value: #{metric.value}</td></tr>"
-            c += "</tbody></table>"
-          $('#content').append c
+        $.getJSON '/users.json', (data) ->
+          $('#users-table').empty()
+          c = "<table class=\"table table-bordered table-hover\"><thead><tr><th>User</th><th>Password</th></tr></thead><tbody>"
+          for users in data
+            c += "<tr><td>#{users.user}</td><td>#{users.pass}</td></tr>"
+          $('#users-table').append c
+          c = "</tbody></table>"
+          $('#users-table').append c

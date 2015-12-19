@@ -1,10 +1,15 @@
 express = require 'express'
 app = express()
 levelup = require('levelup')
-db = require './db'
+##db = require './db'
 session = require 'express-session'
 LevelStore = require('level-session-store')(session)
+morgan = require 'morgan'
+bodyparser = require 'body-parser'
+users = require './users'
 
+app.use bodyparser.json()
+app.use bodyparser.urlencoded()
 app.set 'port', 1889
 app.set 'views', "#{__dirname}/../views"
 app.set 'view engine', 'jade'
@@ -12,7 +17,7 @@ app.use '/', express.static "#{__dirname}/../public"
 app.use require('body-parser')()
 app.use session
   secret: '35ktqG6A1RFitUdYA1RFceaqQtqGlA1RFW0jBIA1RFtqG'
-  store: new LevelStore '../db/sessions'
+  store: new LevelStore './db/sessions'
   resave: true
   saveUninitialized: true
 
@@ -44,7 +49,11 @@ app.get '/my-metrics', authCheck, (req, res) ->
   console.log "req.session.user = " + req.session.user
   res.render 'my_metrics'
 
-app.get '/metrics.json', authCheck, (req, res) ->
+app.get '/users.json', (req, res) ->
+  users.get (err, users) ->
+    res.status(200).json users
+
+app.get '/users.json', authCheck, (req, res) ->
   res.status(200).json db.get(req.session.user)
 
 app.get '/hello/:name', authCheck, (req, res) ->
@@ -64,15 +73,14 @@ app.post '/metric/:id.json', authCheck, (req, res) ->
 app.get '/login', (req, res) ->
   res.render 'login'
 
-
 app.get '/signup', authCheck, (req, res) ->
   res.render 'signup'
 
-app.post '/signup', authCheck, (req, res) ->
-  user.save req.body.username, req.body.password, (err, data) ->
+app.post '/signup', (req, res) ->
+  users.save req.body.user, req.body.pass, (err, data) ->
     if err then throw error
     else
-      res.redirect '/login'
+      res.redirect '/'
 
 app.post '/login', (req, res) ->
   console.log "Login method called"
