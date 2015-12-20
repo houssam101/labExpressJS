@@ -10,7 +10,7 @@ describe "metrics", () ->
       next err
 
   it "get a metric", (next) ->
-    metrics.save '1', [
+    metrics.save 'admin', [
       timestamp:(new Date '2015-11-04 14:00 UTC').getTime(), value:23
      ,
       timestamp:(new Date '2015-11-04 14:10 UTC').getTime(), value:56

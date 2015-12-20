@@ -8,9 +8,7 @@ Gr. SI International number 2
 
 ## About this code
 
-Project is developed using [coffee](http://coffeescript.org/) and [jade](http://jade-lang.com/).
-
-Tests are developed using [mocha](http://mochajs.org/) and [should](http://shouldjs.github.io/).
+Project is developed using [coffee](http://coffeescript.org/) and [jade](http://jade-lang.com/) and [Bootstrap](http://getbootstrap.com/).
 
 ## Installation & Instructions
 
