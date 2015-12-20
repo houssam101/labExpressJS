@@ -27,10 +27,17 @@ block content
             i(class="fa fa-pie-chart")
             span  My metrics
 
+        div#graph.aGraph
         div#display-metrics
-        p
-            button(id="get-metrics",class="btn btn-primary") Get metrics
+        div#metrics
         div#content
+        p
+            button(id="get-metrics",class="btn btn-primary")
+                i(class="fa fa-refresh")
+                span  Get/Refresh metrics
+
+
+        hr
 
         h1
             i(class="fa fa-plus")
@@ -40,73 +47,79 @@ block content
             div.row
                 div.col-sm-6
                     div#datepicker
-                    input(type="text", name="date", id="date", class="form-control", required="true")
+                    input(type="hidden", name="date", id="date", class="form-control", required="true")
 
                 div.col-sm-6
                     div.form-group
-                      label(for="user") Value
+                      label(for="value") Value
                       input(type="number", name="value", id="value", class="form-control",required="true")
                     div.form-group
                       button(type="submit", class="btn btn-success") Insert this metric
 
 
 
-  script
-    :coffee-script
-      $('#get-metrics').click (e) ->
-        e.preventDefault()
-        $.getJSON '/metrics.json', (data) ->
-          $('#content').empty()
-          c = "<table class=\"table table-bordered table-hover\"><thead><tr><th>Timestamp</th><th>Value</th></tr></thead><tbody>"
-          for metric in data
-            c += "<tr><td>#{metric.date}</td><td>#{metric.value}</td></tr>"
+    script
+      :coffee-script
+        $('#get-metrics').one 'click', (e) ->
+          e.preventDefault()
 
-          $('#content').append c
-          c = "</tbody></table>"
-          $('#content').append c
-      $('#datepicker').datepicker
-        maxViewMode: 1
-        todayHighlight: true
-        format: 'dd/mm/yyyy'
+          $.getJSON '/metrics.json', (metrics) ->
+            $('#content').empty()
+            c = "<table class='table table-striped table-condensed table-hover'><tr><th>Date (timestamp format)</th><th>Value</th></tr>"
+            values = []
+            timestamps = []
+            for metric in metrics
+              c+="<tr><td>#{metric.date}</td><td>#{metric.value}</td></tr>"
+              values.push parseInt("#{metric.value}")
+              timestamps.push parseInt("#{metric.date}")
+            c+="</table>"
+            showGraph values, timestamps
+            $('#metrics').append c
+        $('#datepicker').datepicker
+          maxViewMode: 1
+          todayHighlight: true
+          format: 'dd/mm/yyyy'
 
-      margin =
-        top: 20
-        right: 20
-        bottom: 30
-        left: 30
-      width = 600 - (margin.left) - (margin.right)
-      height = 300 - (margin.top) - (margin.bottom)
-      parseDate = d3.time.format('%d-%b-%y').parse
-      x = d3.time.scale().range([
-        0
-        width
-      ])
-      y = d3.scale.linear().range([
-        height
-        0
-      ])
-      xAxis = d3.svg.axis().scale(x).orient('bottom')
-      yAxis = d3.svg.axis().scale(y).orient('left')
-      line = d3.svg.line().x((d) ->
-        x d.date
-      ).y((d) ->
-        y d.close
-      )
-      svg = d3.select('#display-metrics').append('svg').attr('width', width + margin.left + margin.right).attr('height', height + margin.top + margin.bottom).append('g').attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
-      d3.tsv '/metrics.json', (error, data) ->
-        if error
-          throw error
-        data.forEach (d) ->
-          d.date = parseDate(d.date)
-          d.close = +d.close
+        $('#datepicker').on 'changeDate', ->
+          $('#date').val $('#datepicker').datepicker('getFormattedDate')
           return
-        x.domain d3.extent(data, (d) ->
-          d.date
-        )
-        y.domain d3.extent(data, (d) ->
-          d.close
-        )
-        svg.append('g').attr('class', 'x axis').attr('transform', 'translate(0,' + height + ')').call xAxis
-        svg.append('g').attr('class', 'y axis').call(yAxis).append('text').attr('transform', 'rotate(-90)').attr('y', 6).attr('dy', '.71em').style('text-anchor', 'end').text 'Price ($)'
-        svg.append('path').datum(data).attr('class', 'line').attr 'd', line
-        return
+
+        showGraph = (values, timestamps) ->
+          margins = [80, 80, 80, 80]
+          width = 650 - (margins[1]) - (margins[3])
+          height = 400 - (margins[0]) - (margins[2])
+
+          # Define x and y axis
+          x = d3.scale.linear().domain([0, values.length]).range([0, width])
+          y = d3.scale.linear().domain([0, d3.max(values)]).range([height, 0])
+
+          # create a line function that can convert values[] into x and y points
+          line = d3.svg.line().x((d, i) ->
+            x i
+          ).y((d) ->
+            y d
+          )
+
+          graph = d3.select('#graph').append('svg:svg').attr('width', width + margins[1] + margins[3]).attr('height', height + margins[0] + margins[2]).append('svg:g').attr('transform', 'translate(' + margins[3] + ',' + margins[0] + ')')
+
+          # Display time in french format 20/12/2015
+          formatTimestamp = (d) ->
+            if timestamps[d]?
+              date = new Date(timestamps[d])
+              year = date.getFullYear()
+              month = date.getMonth()+1
+              day = date.getDate()
+              hours = date.getHours()
+              minutes = '0' + date.getMinutes()
+              return formattedTime = day + '/' + month + '/' + year
+            else
+              return ''
+
+
+          xAxis = d3.svg.axis().scale(x).ticks(timestamps.length).outerTickSize(0).tickFormat(formatTimestamp).tickSize(-height).tickSubdivide(true)
+          graph.append('svg:g').attr('class', 'x axis').attr('transform', 'translate(0,' + height + ')').call xAxis
+
+          yAxisLeft = d3.svg.axis().scale(y).ticks(6).orient('left')
+          graph.append('svg:g').attr('class', 'y axis').attr('transform', 'translate(-25,-5)').call yAxisLeft
+
+          graph.append('svg:path').attr 'd', line(values)

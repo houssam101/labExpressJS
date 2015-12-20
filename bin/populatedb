@@ -8,50 +8,32 @@ exec "rm -rf #{__dirname}/../db/metrics && mkdir #{__dirname}/../db/metrics", (e
   # Require after rm and mkdir or DB is deleted once in callback
   metrics = require '../src/metrics'
 
-  console.log 'DB deleted'
-  console.log 'Creating metrics'
-  met = [
-    [
-      timestamp: new Date('2015-12-01 10:30 UTC').getTime(),
-      value: 26
-    ,
-      timestamp: new Date('2015-12-01 10:35 UTC').getTime(),
-      value: 23
-    ,
-      timestamp: new Date('2015-12-01 10:40 UTC').getTime(),
-      value: 20
-    ,
-      timestamp: new Date('2015-12-01 10:45 UTC').getTime(),
-      value: 19
-    ,
-      timestamp: new Date('2015-12-01 10:50 UTC').getTime(),
-      value: 18
-    ,
-      timestamp: new Date('2015-12-01 10:55 UTC').getTime(),
-      value: 20
-    ],
-      [
-        timestamp: new Date('2015-11-01 10:30 UTC').getTime(),
-        value: 26
-      ,
-        timestamp: new Date('2015-11-01 10:35 UTC').getTime(),
-        value: 23
-      ,
-        timestamp: new Date('2015-11-01 10:40 UTC').getTime(),
-        value: 20
-      ,
-        timestamp: new Date('2015-11-01 10:45 UTC').getTime(),
-        value: 19
-      ,
-        timestamp: new Date('2015-11-01 10:50 UTC').getTime(),
-        value: 18
-      ,
-        timestamp: new Date('2015-11-01 10:55 UTC').getTime(),
-        value: 20
-      ]
+  console.log 'Creating users'
+
+  users = [
+    {
+      user: "admin",
+      pass: "password",
+    },
+    {
+      user: "superadminsystem",
+      pass: "azerty",
+    },
+    {
+      user: "warrior",
+      pass: "warrior",
+    },
+    {
+      user: "mickey",
+      pass: "mickey"
+    },
+    {
+      user: "vivelece",
+      pass: "vivelece"
+    }
   ]
 
-  for metric, index in met
-    console.log "Saving batch #{index + 1}"
-    metrics.save index + 1, metric, (err) ->
-      return next err if err
+  for generated_user, index in users
+    console.log "Saving users #{index + 1}"
+    user.save generated_user.user, generated_user.pass, (err) ->
+      return err if err

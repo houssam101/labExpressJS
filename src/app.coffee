@@ -60,11 +60,12 @@ app.post '/my-metrics', authCheck, (req, res) ->
   username = req.session.user
 
   myDate = req.body.date
-  myDate.split "-"
+  ##myDate="26-02-2012";
+  myDate=myDate.split("/");
   newDate = myDate[1] + '/' + myDate[0] + '/' + myDate[2]
   myDate2 = new Date(newDate)
-  console.log myDate2.getTime()
 
+  console.log "myDate2.getTime() : " + myDate2.getTime()
   metrics.save req.session.user, myDate2.getTime(), req.body.value, (err, data) ->
     if err then throw error
     else
