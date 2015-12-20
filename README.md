@@ -3,8 +3,8 @@
 ## Authors
 - Vincent Rakotomanga
 - Houssam Kamal
-Gr. SII2
-SSI22
+
+Gr. SI International number 2
 
 ## About this code
 
