@@ -16,6 +16,9 @@ Project is developed using [coffee](http://coffeescript.org/) and [jade](http://
 Before anything : `npm install` && `chmod 755 bin/*`
 
 - `./bin/build` to compile the coffee code to javascript
-- `./bin/populatedb` to add some metrics in the db
+- `./bin/populatedb` to add some users and metrics in the db
 - `./bin/start` to run the code
+
 To run the application for Windows OS, run the following command line ".\node_modules\.bin/nodemon src\app.coffee".
+
+Note: Remplace / by \ if commands are not running.
