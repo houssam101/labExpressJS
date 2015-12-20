@@ -47,7 +47,6 @@ app.get '/', authCheck, (req, res) ->
   res.render 'login'
 
 app.get '/my-metrics', authCheck, (req, res) ->
-  console.log "req.session.user = " + req.session.user
   res.render 'my_metrics'
 
 app.get '/users.json', (req, res) ->
@@ -78,6 +77,7 @@ app.post '/my-metrics', authCheck, (req, res) ->
 ###
 
 app.get '/metrics.json', (req, res) ->
+  console.log "req.session.user = " + req.session.user
   metrics.get req.session.user, (err, data) ->
     res.status(200).json data
 
