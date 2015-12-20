@@ -7,6 +7,7 @@ LevelStore = require('level-session-store')(session)
 morgan = require 'morgan'
 bodyparser = require 'body-parser'
 users = require './users'
+metrics = require './metrics'
 
 app.use bodyparser.json()
 app.use bodyparser.urlencoded()
@@ -58,18 +59,29 @@ app.get '/hello/:name', authCheck, (req, res) ->
 
 app.post '/my-metrics', authCheck, (req, res) ->
   username = req.session.user
-  myDate = req.body.date
 
+  myDate = req.body.date
   myDate.split "-"
-  newDate = myDate[1] + "/" + myDate[0] + "/" + myDate[2]
-  myDate2 = Date(newDate).getTime()
-  console.log myDate2
+  newDate = myDate[1] + '/' + myDate[0] + '/' + myDate[2]
+  myDate2 = new Date(newDate)
+  console.log myDate2.getTime()
+
+  metrics.save req.session.user, myDate2.getTime(), req.body.value, (err, data) ->
+    if err then throw error
+    else
+      res.render 'my_metrics'
+
 
 ###
   db.put_metrics timestamp, req.body.value
   db.put_association username, timestamp
 ###
-app.post '/metric/:id.json', authCheck, (req, res) ->
+
+app.get '/metrics.json', (req, res) ->
+  metrics.get req.session.user, (err, data) ->
+    res.status(200).json data
+
+app.post '/metrics/:id.json', authCheck, (req, res) ->
   db.save req.params.id, req.body, (err) ->
     if err then res.status(500).json err
     else res.status(200).send "Metrics saved"
@@ -106,20 +118,5 @@ app.post '/login', (req, res) ->
       res.locals.error_login = true
       res.render 'login'
 
-
-###
-  if req.body.user == "admin" and req.body.pass == "password"
-    res.locals.connected = true
-    req.session.loggedIn = true
-    req.session.user = req.body.user
-    res.locals.user = req.body.user
-    res.render 'my_metrics'
-  else
-    res.locals.connected = false
-    req.session.loggedIn = false
-    req.session.user = null
-    res.locals.error_login = true
-    res.render 'login'
-###
 app.listen app.get('port'), () ->
   console.log "listening on #{app.get 'port'}"

@@ -28,7 +28,9 @@ block content
             span  My metrics
 
         div#display-metrics
-
+        p
+            button(id="get-metrics",class="btn btn-primary") Get metrics
+        div#content
 
         h1
             i(class="fa fa-plus")
@@ -53,14 +55,15 @@ block content
     :coffee-script
       $('#get-metrics').click (e) ->
         e.preventDefault()
-        $.getJSON 'http://localhost:1889/data.tsv', (data) ->
+        $.getJSON '/metrics.json', (data) ->
           $('#content').empty()
-          c = "<table class=\"table table-bordered table-hover\"><thead><tr><th>TIMESTAMP</th><th>VALUE</th></tr></thead><tbody>"
+          c = "<table class=\"table table-bordered table-hover\"><thead><tr><th>Timestamp</th><th>Value</th></tr></thead><tbody>"
           for metric in data
-            c += "<tr><td>timestamp: #{metric.timestamp}</td><td>value: #{metric.value}</td></tr>"
-            c += "</tbody></table>"
-          $('#content').append c
+            c += "<tr><td>#{metric.date}</td><td>#{metric.value}</td></tr>"
 
+          $('#content').append c
+          c = "</tbody></table>"
+          $('#content').append c
       $('#datepicker').datepicker
         maxViewMode: 1
         todayHighlight: true
@@ -90,7 +93,7 @@ block content
         y d.close
       )
       svg = d3.select('#display-metrics').append('svg').attr('width', width + margin.left + margin.right).attr('height', height + margin.top + margin.bottom).append('g').attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
-      d3.tsv 'http://localhost:1889/data.tsv', (error, data) ->
+      d3.tsv '/metrics.json', (error, data) ->
         if error
           throw error
         data.forEach (d) ->
